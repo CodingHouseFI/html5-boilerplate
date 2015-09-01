@@ -272,3 +272,18 @@ textarea {
         page-break-after: avoid;
     }
 }
+
+div#instructions {
+  font-size: 10vw;
+  text-align: center;
+  margin-top: 40%;
+}
+
+div#remaining-seconds {
+  font-size: 20vw;
+  /* float: right; */
+  /* margin-right: 0.2em; */
+  bottom: 0;
+  position: absolute;
+  right: 5px;
+}
