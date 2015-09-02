@@ -3,7 +3,10 @@
 
   console.log('watch working??');
 
-  var showNextSlide = function(slideObject) {
+  var data, currentSlideId = -1;
+
+  var showNextSlide = function() {
+    var slideObject = data[++currentSlideId];
     var remainingSeconds = slideObject.seconds;
     var remainingSecondsDiv = document.getElementById("remaining-seconds");
     var instructionsDiv = document.getElementById("instructions");
@@ -11,10 +14,15 @@
     remainingSecondsDiv.textContent = remainingSeconds;
     instructionsDiv.textContent = slideObject.instructions;
 
+    if (!remainingSeconds) {
+      return;
+    }
+
     var intervalId = setInterval(function() {
       remainingSecondsDiv.textContent = --remainingSeconds;
       if (remainingSeconds === 0) {
         clearInterval(intervalId);
+        showNextSlide();
       }
     }, 1000);
   };
@@ -25,8 +33,9 @@
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
       // Success!
-      var data = JSON.parse(request.responseText).data;
-      showNextSlide(data[0])
+      data = JSON.parse(request.responseText).data;
+      data.push( { instructions: 'Done', seconds: null } );
+      showNextSlide();
     } else {
       // We reached our target server, but it returned an error
     }
