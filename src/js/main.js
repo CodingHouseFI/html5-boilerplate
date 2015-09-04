@@ -1,49 +1,32 @@
-(function() {
-  "use strict";
+console.log('watch working??');
 
-  console.log('watch working??');
+var data, currentSlideId = -1;
 
-  var data, a = -1;
+var showNextSlide = function() {
+  var slideObject = data[++currentSlideId];
+  var remainingSeconds = slideObject.seconds;
+  var remainingSecondsDiv = document.getElementById("remaining-seconds");
+  var instructionsDiv = document.getElementById("instructions");
 
-  var showNextSlide = function() {
-    var slideObject = data[++a];
-    var remainingSeconds = slideObject.seconds;
-    var remainingSecondsDiv = document.getElementById("remaining-seconds");
-    var instructionsDiv = document.getElementById("instructions");
+  remainingSecondsDiv.textContent = remainingSeconds;
+  instructionsDiv.textContent = slideObject.instructions;
 
-    remainingSecondsDiv.textContent = remainingSeconds;
-    instructionsDiv.textContent = slideObject.instructions;
+  if (!remainingSeconds) {
+    return;
+  }
 
-    if (!remainingSeconds) {
-      return;
-    }
-
-    var intervalId = setInterval(function() {
-      remainingSecondsDiv.textContent = --remainingSeconds;
-      if (remainingSeconds === 0) {
-        clearInterval(intervalId);
-        showNextSlide();
-      }
-    }, 1000);
-  };
-
-  var request = new XMLHttpRequest();
-  request.open('GET', '/data.json', true);
-
-  request.onload = function() {
-    if (request.status >= 200 && request.status < 400) {
-      // Success!
-      data = JSON.parse(request.responseText).data;
-      data.push( { instructions: 'Done', seconds: null } );
+  var intervalId = setInterval(function() {
+    remainingSecondsDiv.textContent = --remainingSeconds;
+    if (remainingSeconds === 0) {
+      clearInterval(intervalId);
       showNextSlide();
-    } else {
-      // We reached our target server, but it returned an error
     }
-  };
+  }, 1000);
+};
 
-  request.onerror = function() {
-    // There was a connection error of some sort
-  };
-
-  request.send();
-})();
+var Ajax = require("./ajax");
+Ajax('/data.json', function(resp) {
+  data = resp;
+  data.push( { instructions: 'Done', seconds: null } );
+  showNextSlide();
+});
