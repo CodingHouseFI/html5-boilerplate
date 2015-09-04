@@ -3,10 +3,10 @@
 
   console.log('watch working??');
 
-  var data, currentSlideId = -1;
+  var data, a = -1;
 
   var showNextSlide = function() {
-    var slideObject = data[++currentSlideId];
+    var slideObject = data[++a];
     var remainingSeconds = slideObject.seconds;
     var remainingSecondsDiv = document.getElementById("remaining-seconds");
     var instructionsDiv = document.getElementById("instructions");
